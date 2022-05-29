@@ -3,7 +3,14 @@ import tsp
 
 class RandomSearch:
 
-    def __init__(self, N, MAX_EVALUATIONS, PROB_DIMEINTION):
+    def __init__(self, N: int, MAX_EVALUATIONS: int, PROB_DIMEINTION: int):
+        """is called when generatimg this class
+
+        Args:
+            N (int): number of solutions
+            MAX_EVALUATIONS (int): number of maximum evaluations
+            PROB_DIMEINTION (int): number of the cities of TSP
+        """
         # RS settings
         self.N = N
 
@@ -19,25 +26,36 @@ class RandomSearch:
         self.BASICTOUR = [i for i in range(0, self.PROB_DIMEINTION)]  # [0,1,2,...,50]
 
     def initialization(self):
+        """is called to randomly initialize all solutions
+        """
         for i in range(self.N):
             self.Xs[i] = np.random.permutation(self.BASICTOUR)
 
-    def evaluate(self, tsp):
+    def evaluate(self, tsp: tsp.TSP):
+        """calculates fitness (Fs) of each solution (Xs) for TSP
+
+        Args:
+            tsp (tsp.TSP): class of TSP
+        """
         for i in range(self.N):
             self.Fs[i] = tsp.evaluate(self.Xs[i])
 
     def update(self):
+        """updates the best solution (BestX) and fitness (BestFX) if a better solution appears
+        """
         _minID = np.argmin(self.Fs)
         if self.BestFX == None or self.Fs[_minID] < self.BestFX:
             self.BestX, self.BestFX = self.Xs[_minID], self.Fs[_minID]
 
     def generation(self):
+        """same as self.initialization; completely randomly ganarates next generation
+        """
         self.initialization()
 
 class GeneticAlgorithm:
 
     def __init__(self, N: int, CrossoverRate: float, MutationRate: float, TournamentSize: int, MAX_EVALUATIONS: int, PROB_DIMEINTION: int):
-        """_summary_
+        """is called when generatimg this class
 
         Args:
             N (int): number of solutions
@@ -181,7 +199,15 @@ class Individual:
         self.Fs = Fs
 
 
-def run(problem, optimizer, MAX_EVALUATIONS, filename):
+def run(problem: tsp.TSP, optimizer: GeneticAlgorithm, MAX_EVALUATIONS: int, filename: str):
+    """solve a problem
+
+    Args:
+        problem (tsp.TSP): a problem
+        optimizer (GeneticAlgorithm): an optimizer
+        MAX_EVALUATIONS (int): number of maximum evaluations
+        filename (str): name of algorithm
+    """
     print("run {}".format(filename))
 
     evals = 0
@@ -206,7 +232,6 @@ if __name__ == "__main__":
     # Basic setting (Do NOT change)
     N, MAX_EVALUATIONS, PROB_DIMEINTION = 100, 50000, 50
     TSP = tsp.TSP(PROB_DIMEINTION)
-    #np.random.seed(0)
 
     # run Random search
     RS = RandomSearch(N, MAX_EVALUATIONS, PROB_DIMEINTION)
