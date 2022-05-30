@@ -3,27 +3,27 @@ import tsp
 
 class RandomSearch:
 
-    def __init__(self, N: int, MAX_EVALUATIONS: int, PROB_DIMEINTION: int):
-        """is called when generatimg this class
+    def __init__(self, N: int, MAX_EVALUATIONS: int, PROB_DIMENSION: int):
+        """is called when generating this class
 
         Args:
             N (int): number of solutions
             MAX_EVALUATIONS (int): number of maximum evaluations
-            PROB_DIMEINTION (int): number of the cities of TSP
+            PROB_DIMENSION (int): number of the cities of TSP
         """
         # RS settings
         self.N = N
 
         # Problem settings
         self.MAX_EVALUATIONS = MAX_EVALUATIONS
-        self.PROB_DIMEINTION = PROB_DIMEINTION
+        self.PROB_DIMENSION = PROB_DIMENSION
 
         # Private variables
         self.Xs = [None for _ in range(self.N)]
         self.Fs = [None for _ in range(self.N)]
         self.BestX = None
         self.BestFX = None
-        self.BASICTOUR = [i for i in range(0, self.PROB_DIMEINTION)]  # [0,1,2,...,50]
+        self.BASICTOUR = [i for i in range(0, self.PROB_DIMENSION)]  # [0,1,2,...,50]
 
     def initialization(self):
         """is called to randomly initialize all solutions
@@ -48,22 +48,22 @@ class RandomSearch:
             self.BestX, self.BestFX = self.Xs[_minID], self.Fs[_minID]
 
     def generation(self):
-        """same as self.initialization; completely randomly ganarates next generation
+        """same as self.initialization; completely randomly generates next generation
         """
         self.initialization()
 
 class GeneticAlgorithm:
 
-    def __init__(self, N: int, CrossoverRate: float, MutationRate: float, TournamentSize: int, MAX_EVALUATIONS: int, PROB_DIMEINTION: int):
-        """is called when generatimg this class
+    def __init__(self, N: int, CrossoverRate: float, MutationRate: float, TournamentSize: int, MAX_EVALUATIONS: int, PROB_DIMENSION: int):
+        """is called when generating this class
 
         Args:
             N (int): number of solutions
-            CrossoverRate (float): possibility of occurance of crossover
-            MutationRate (float): possibility of occurance of mutation
+            CrossoverRate (float): possibility of occurrence of crossover
+            MutationRate (float): possibility of occurrence of mutation
             TournamentSize (int): number of candidates of tournament selection
             MAX_EVALUATIONS (int): number of maximum evaluations
-            PROB_DIMEINTION (int): number of the cities of TSP
+            PROB_DIMENSION (int): number of the cities of TSP
         """
         # GA settings
         self.N = N
@@ -73,14 +73,14 @@ class GeneticAlgorithm:
 
         # Problem settings
         self.MAX_EVALUATIONS = MAX_EVALUATIONS
-        self.PROB_DIMEINTION = PROB_DIMEINTION
+        self.PROB_DIMENSION = PROB_DIMENSION
 
         # Private variables
         self.Xs = [None for _ in range(self.N)]
         self.Fs = [None for _ in range(self.N)]
         self.BestX = None
         self.BestFX = None
-        self.BASICTOUR = [i for i in range(0, self.PROB_DIMEINTION)]  # [0,1,2,...,50]
+        self.BASICTOUR = [i for i in range(0, self.PROB_DIMENSION)]  # [0,1,2,...,50]
 
     def initialization(self):
         """is called only one time to initialize all solutions when starting GA
@@ -136,7 +136,7 @@ class GeneticAlgorithm:
         Fs_sum  = sum(self.Fs)
         # normalize self.Fs to use itself as possibility distribution
         Fs_normalize = [i / Fs_sum for i in self.Fs]
-        # select one solution out of all solutions accoding to the possibility distribution Fs_normalize
+        # select one solution out of all solutions according to the possibility distribution Fs_normalize
         selected_Xs = np.random.choice([Individual(self.Xs[i], self.Fs[i]) for i in range(self.N)], 1, Fs_normalize)
         return selected_Xs[0].Xs
 
@@ -152,7 +152,7 @@ class GeneticAlgorithm:
         """
         if np.random.rand() < self.PC:
             # randomly select two slice point
-            slice_point = np.random.choice([i for i in range(0, self.PROB_DIMEINTION + 1)], 2, False)
+            slice_point = np.random.choice([i for i in range(0, self.PROB_DIMENSION + 1)], 2, False)
             slice_point = sorted(slice_point)
 
             # slice from parent1
@@ -184,7 +184,7 @@ class GeneticAlgorithm:
         """
         if np.random.rand() < self.PM:
             # randomly select two indexes
-            mutate_indexes = np.random.choice([i for i in range(0, self.PROB_DIMEINTION)], 2, False)
+            mutate_indexes = np.random.choice([i for i in range(0, self.PROB_DIMENSION)], 2, False)
             # swap the two
             offspring[mutate_indexes[0]], offspring[mutate_indexes[1]] = offspring[mutate_indexes[1]], offspring[mutate_indexes[0]]
         else:
@@ -230,14 +230,14 @@ def run(problem: tsp.TSP, optimizer: GeneticAlgorithm, MAX_EVALUATIONS: int, fil
 
 if __name__ == "__main__":
     # Basic setting (Do NOT change)
-    N, MAX_EVALUATIONS, PROB_DIMEINTION = 100, 50000, 50
-    TSP = tsp.TSP(PROB_DIMEINTION)
+    N, MAX_EVALUATIONS, PROB_DIMENSION = 100, 50000, 50
+    TSP = tsp.TSP(PROB_DIMENSION)
 
     # run Random search
-    RS = RandomSearch(N, MAX_EVALUATIONS, PROB_DIMEINTION)
+    RS = RandomSearch(N, MAX_EVALUATIONS, PROB_DIMENSION)
     run(TSP, RS, MAX_EVALUATIONS, "RS")
 
     # run Genetic algorithm
     CrossoverRate, MutationRate, TournamentSize = 1.0, 0.1, 10
-    GA = GeneticAlgorithm(N, CrossoverRate, MutationRate, TournamentSize, MAX_EVALUATIONS, PROB_DIMEINTION)
+    GA = GeneticAlgorithm(N, CrossoverRate, MutationRate, TournamentSize, MAX_EVALUATIONS, PROB_DIMENSION)
     run(TSP, GA, MAX_EVALUATIONS, "GA")
