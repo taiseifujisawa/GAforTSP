@@ -199,7 +199,7 @@ class Individual:
         self.Fs = Fs
 
 
-def run(problem: tsp.TSP, optimizer: GeneticAlgorithm, MAX_EVALUATIONS: int, filename: str):
+def run(problem, optimizer, MAX_EVALUATIONS: int, filename: str):
     """solve a problem
 
     Args:
